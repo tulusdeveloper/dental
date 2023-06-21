@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Controllers;
 
 use App\Models\NewsModel;
@@ -12,8 +13,8 @@ class News extends BaseController
         $model = model(NewsModel::class);
 
         $data = [
-            'news' => $model->getNews(),
-            'title' => 'News archieve',
+            'news'  => $model->getNews(),
+            'title' => 'News archive',
         ];
 
         return view('templates/header', $data)
@@ -25,10 +26,10 @@ class News extends BaseController
     {
         $model = model(NewsModel::class);
 
-        $data['news'] = model->getNews($slug);
+        $data['news'] = $model->getNews($slug);
 
         if (empty($data['news'])) {
-            throw new PageNotFoundExeption('Cannot find the news item: ' . $slug);
+            throw new PageNotFoundException('Cannot find the news item: ' . $slug);
         }
 
         $data['title'] = $data['news']['title'];
