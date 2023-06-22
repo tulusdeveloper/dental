@@ -38,4 +38,41 @@ class News extends BaseController
             . view('news/view')
             . view('templates/footer');
     }
+
+    public function create()
+    {
+        helper('form');
+        // Checks Whether the form is submitted.
+        if (! $this->request->is('post')) {
+            // THe form is not submitted, so returns the form.
+            return view('templates/header', ['title' => 'Create a new item'])
+                . view('news/create')
+                . view('templates/footer');
+        }
+
+        $post = $this->request->getPost(['title', 'body']);
+
+        // Checks Whather the submitted data passed the validation rules.
+        if (! $this->validateDate($post, [
+            'title' => 'required|max_length[255]min_length[3]',
+            'body' => 'required|max_length[5000]min_length[10]',
+        ])) {
+            // The validation fails, so return s the form.
+            return view('templates/header', ['title' => 'Create a new item'])
+                . view('news/create')
+                . view('templates/footer');
+        }
+
+        $model = model(NewsModel::class);
+
+        $model->save([
+            'title' => $post['title'],
+            'slug' => url_title($post['title'], '-', true),
+            'body' => $post['body'],
+        ]);
+        
+        return view('templates/header', ['title' => 'Create a news item'])
+            . view('news/success')
+            . view('templates/footer');
+    }
 }
